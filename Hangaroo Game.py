@@ -1,0 +1,89 @@
+def isWordGuessed(secretWord, lettersGuessed):
+
+    number = 0
+    for a, b in enumerate(secretWord):
+    	if b in lettersGuessed:
+    		number += 1
+    if number == len(secretWord):
+    	return True
+    else:
+    	return False
+
+def getGuessedWord(secretWord, lettersGuessed):
+    number = 0
+    blank = ['_ '] * len(secretWord)
+
+    for a, b in enumerate(secretWord):
+        if b in lettersGuessed:
+            number += 1
+            blank.insert(number-1,b)
+            blank.pop(number)
+            if number == len(secretWord):
+                return ''.join(str(e) for e in blank)
+        else:
+            number += 1
+            blank.insert(number-1,'_')
+            blank.pop(number)
+            if number == len(secretWord):
+                return ''.join(str(e) for e in blank)
+        
+def getAvailableLetters(lettersGuessed):
+
+    alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+    alphabet2 = alphabet[:]
+
+    def removeLetters(L1, L2):
+        L1Start = L1[:]
+        for e in L1:
+            if e in L1Start:
+                L2.remove(e)
+        return ''.join(str(e) for e in L2)
+
+    return removeLetters(lettersGuessed, alphabet2)
+
+def hangaroo(secretWord):
+    intro = str(len(secretWord))
+    lettersGuessed = []
+    guess = str
+    mistakesMade = 10
+    wordGuessed = False
+    
+    print ('Welcome to Hangaroo!')
+    print ('Guess a word that is ',intro,' letters long.')
+    print ('_______________________________________________________________')
+
+    while mistakesMade > 0 and mistakesMade <= 10 and wordGuessed is False:
+        if secretWord == getGuessedWord(secretWord, lettersGuessed):
+            wordGuessed = True
+            break
+        print ('You have ', str(mistakesMade), ' guesses left.')
+        print ('Available letters: ', getAvailableLetters(lettersGuessed))
+        guess= input('Please guess a letter: ')
+        guesslower= guess.lower()
+        if guesslower in secretWord:
+            if guesslower in lettersGuessed:
+                print ("Sorry :-( You've already guessed that letter: ", getGuessedWord(secretWord, lettersGuessed))
+                print ('_______________________________________________________________')
+            else:
+                lettersGuessed.append(guesslower)
+                print ('Good guess :-) : ', getGuessedWord(secretWord, lettersGuessed))
+                print ('_______________________________________________________________')
+        else: 
+            if guesslower in lettersGuessed:
+                print ("Sorry :-( You've already guessed that letter: ", getGuessedWord(secretWord, lettersGuessed))
+                print ('_______________________________________________________________')
+            else:
+                lettersGuessed.append(guesslower)
+                mistakesMade -= 1
+                print ('Hmp :-\ That letter is not in my word: ', getGuessedWord(secretWord, lettersGuessed))
+                print ('_______________________________________________________________')
+       
+        
+    if wordGuessed == True:
+        print ('Congratulations, you guessed it! The word was', secretWord)
+    elif mistakesMade == 0:
+        print ('Sorry, you ran out of guesses. The word was', secretWord,'.', 'Try again next time')
+    return
+
+
+hangaroo("basketball")
